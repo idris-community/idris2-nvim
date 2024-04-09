@@ -7,7 +7,7 @@ Easy setup and extra features for the native LSP client and the Idris2 LSP serve
 - `nvim-lspconfig`
 - `idris2`
 - `idris2-lsp`
-- `nui.nvim` (only for extra UI features)
+- `nui.nvim` (for UI features)
 
 ## Installation
 
