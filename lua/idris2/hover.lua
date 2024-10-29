@@ -17,12 +17,15 @@ function M.handler(err, result, ctx, cfg)
 
   if config.options.client.hover.use_as_popup and not config.split_open then
     M.open_split()
-    vim.cmd [[
-      augroup idris2_split_popup
-        autocmd!
-        autocmd CursorMoved,CursorMovedI,InsertCharPre <buffer> ++once lua require('idris2.hover').close_split()
-      augroup end
-    ]]
+    local group = vim.api.nvim_create_augroup('idris2_split_popup', { clear = true })
+    vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI', 'InsertCharPre' }, {
+      buffer = 0,  -- current buffer
+      once = true,
+      group = group,
+      callback = function()
+        require('idris2.hover').close_split()
+      end
+    })
   end
 
   if config.split_open then
@@ -84,7 +87,7 @@ function M.setup()
   vim.api.nvim_buf_set_name(M.res_split.bufnr, 'Idris2 LSP Response Buffer')
   M.res_split:on({event.BufWinEnter, event.BufEnter}, function()
     if vim.fn.winnr('$') == 1 and vim.api.nvim_get_current_win() == M.res_split.winid then
-      vim.cmd [[q]]
+      vim.cmd.quit()
     end
   end)
   M.res_split:on({event.BufHidden, event.WinClosed}, function()
@@ -93,9 +96,13 @@ function M.setup()
   end)
   M.res_split:hide()
   if config.options.client.hover.use_split and not config.options.client.hover.use_as_popup then
-    vim.cmd [[
-      autocmd BufEnter *.idr ++once lua require('idris2.hover').open_split()
-    ]]
+    vim.api.nvim_create_autocmd("BufEnter", {
+      pattern = "*.idr",
+      once = true,
+      callback = function()
+        require('idris2.hover').open_split()
+      end
+    })
   end
 end
 

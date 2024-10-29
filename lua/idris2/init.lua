@@ -86,14 +86,14 @@ function M.setup(options)
 	code_action.setup()
 
 	if config.options.use_default_semantic_hl_groups then
-		vim.cmd([[highlight link LspSemantic_variable idrisString]])
-		vim.cmd([[highlight link LspSemantic_enumMember idrisStructure]])
-		vim.cmd([[highlight link LspSemantic_function idrisIdentifier]])
-		vim.cmd([[highlight link LspSemantic_type idrisType]])
-		vim.cmd([[highlight link LspSemantic_keyword idrisStatement]])
-		vim.cmd([[highlight link LspSemantic_namespace idrisImport]])
-		vim.cmd([[highlight link LspSemantic_postulate idrisStatement]])
-		vim.cmd([[highlight link LspSemantic_module idrisModule]])
+		vim.api.nvim_set_hl(0, 'LspSemantic_variable', { link = 'idrisString' })
+		vim.api.nvim_set_hl(0, 'LspSemantic_enumMember', { link = 'idrisStructure' })
+		vim.api.nvim_set_hl(0, 'LspSemantic_function', { link = 'idrisIdentifier' })
+		vim.api.nvim_set_hl(0, 'LspSemantic_type', { link = 'idrisType' })
+		vim.api.nvim_set_hl(0, 'LspSemantic_keyword', { link = 'idrisStatement' })
+		vim.api.nvim_set_hl(0, 'LspSemantic_namespace', { link = 'idrisImport' })
+		vim.api.nvim_set_hl(0, 'LspSemantic_postulate', { link = 'idrisStatement' })
+		vim.api.nvim_set_hl(0, 'LspSemantic_module', { link = 'idrisModule' })
 	end
 
 	setup_lsp()
