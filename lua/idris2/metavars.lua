@@ -1,25 +1,5 @@
 local M = {}
 
-local Menu = require('nui.menu')
-local event = require('nui.utils.autocmd').event
-
-local popup_options = {
-  relative = 'win',
-  position = {
-    row = '0%',
-    col = '100%',
-  },
-  border = {
-    style = 'rounded',
-    highlight = 'FloatBorder',
-    text = {
-      top = 'Metavariables',
-      top_align = 'center'
-    }
-  },
-  highlight = 'Normal:Normal',
-}
-
 local function pos_lt(x, y)
   if x.line == y.line then
     return x.character < y.character
@@ -42,7 +22,7 @@ function M.jump_handler(backward)
     compare = pos_lt
   end
 
-  return function(err, result, ctx, config)
+  return function(err, result, _ctx, _config)
     if err ~= nil then
       vim.notify(err, vim.log.levels.ERROR)
       return
@@ -75,54 +55,34 @@ function M.jump_handler(backward)
   end
 end
 
-function M.menu_handler(opts)
-  local opts = opts or {}
-  return function (err, result, ctx, config)
-    if err ~= nil then
-      vim.notify(err, vim.log.levels.ERROR)
-      return
-    end
-
-    if vim.tbl_isempty(result) then
-      vim.notify('No metavariables in context', vim.log.levels.INFO)
-      return
-    end
-
-    local items = vim.tbl_map(function(x)
-      local text = x.name .. ' : ' .. x.type
-      return Menu.item(text, { metavar = x })
-    end, result)
-    local menu = Menu(popup_options, {
-      lines = items,
-      max_width = 100,
-      separator = {
-        char = '-',
-        text_align = 'right',
-      },
-      keymap = {
-        focus_next = { 'j', '<Down>', '<Tab>' },
-        focus_prev = { 'k', '<Up>', '<S-Tab>' },
-        close = { '<Esc>', '<C-c>' },
-        submit = { '<CR>', '<Space>' },
-      },
-      on_submit = function(item)
-        if item.metavar.location ~= nil then
-          vim.lsp.util.jump_to_location(item.metavar.location, 'utf-32')
-        else
-          vim.notify('Selected metavar is not in a physical location', vim.log.levels.ERROR)
-        end
-      end,
-    })
-
-    menu:mount()
-    if opts.popup then
-      menu:on(event.BufLeave, menu.menu_props.on_close, { once = true })
-    end
+function M.menu_handler(err, result, ctx, config)
+  if err ~= nil then
+    vim.notify(err, vim.log.levels.ERROR)
+    return
   end
+
+  if vim.tbl_isempty(result) then
+    vim.notify('No metavariables in context', vim.log.levels.INFO)
+    return
+  end
+  print(vim.inspect(result))
+  vim.ui.select(result, {
+    prompt = 'Select a metavariable',
+    format_item = function(x)
+      return x.name .. ' : ' .. x.type
+    end,
+  }, function(sel)
+    print(vim.inspect(sel))
+    if sel ~= nil and sel.location ~= nil then
+      vim.lsp.util.jump_to_location(sel.location, 'utf-32')
+    else
+      vim.notify('Selected metavar is not in a physical location', vim.log.levels.ERROR)
+    end
+  end)
 end
 
-function M.request_all(opts)
-  vim.lsp.buf_request(0, 'workspace/executeCommand', { command = 'metavars' }, M.menu_handler(opts))
+function M.request_all()
+  vim.lsp.buf_request(0, 'workspace/executeCommand', { command = 'metavars' }, M.menu_handler)
 end
 
 function M.goto_next()
