@@ -44,12 +44,6 @@ end
 
 local function setup_lsp()
 	local root_dir_error = function(startpath)
-
-		-- If ipkg file is specified in the user config, assume default startpath
-		if config.options.ipkg then
-		  return startpath
-		end
-
 		local path = nvim_lsp.util.root_pattern("*.ipkg")(startpath)
 		if path ~= nil then
 			return path
@@ -63,17 +57,7 @@ local function setup_lsp()
 			vim.log.levels.WARN
 		)
 	end
-
-	-- If ipkg file is specified in user config, pass it down to lspconfig as idris2-lsp command argument
-	local cmd
-	if config.options.ipkg
-	then
-	  cmd = { "idris2-lsp", config.options.ipkg }
-	else
-	  cmd = { "idris2-lsp" }
-	end
-
-	local server = vim.tbl_deep_extend("force", config.options.server, { cmd = cmd, root_dir = root_dir_error })
+	local server = vim.tbl_deep_extend("force", config.options.server, { root_dir = root_dir_error })
 	nvim_lsp.idris2_lsp.setup(server)
 
 	-- Goto... commands may jump to non package-local files, e.g. base or contrib
@@ -137,6 +121,10 @@ end
 
 function M.hide_namespace()
 	vim.lsp.buf_notify(0, "workspace/didChangeConfiguration", { settings = { fullNamespace = false } })
+end
+
+function M.set_ipkg_path(path)
+	vim.lsp.buf_notify(0, "workspace/didChangeConfiguration", { settings = { ipkgPath = path } })
 end
 
 return M
