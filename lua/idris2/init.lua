@@ -123,4 +123,8 @@ function M.hide_namespace()
 	vim.lsp.buf_notify(0, "workspace/didChangeConfiguration", { settings = { fullNamespace = false } })
 end
 
+function M.set_ipkg_path(path)
+	vim.lsp.buf_notify(0, "workspace/didChangeConfiguration", { settings = { ipkgPath = path } })
+end
+
 return M
