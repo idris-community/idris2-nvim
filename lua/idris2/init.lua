@@ -96,6 +96,12 @@ function M.setup(options)
 		vim.cmd([[highlight link LspSemantic_module idrisModule]])
 	end
 
+ vim.filetype.add{
+  extension = {
+   idr = 'idris2'
+  }
+ }
+
 	setup_lsp()
 end
 
@@ -125,6 +131,10 @@ end
 
 function M.set_ipkg_path(path)
 	vim.lsp.buf_notify(0, "workspace/didChangeConfiguration", { settings = { ipkgPath = path } })
+end
+
+function M.set_log_level(lvl)
+	vim.lsp.buf_notify(0, "workspace/didChangeConfiguration", { settings = { logSeverity = lvl } })
 end
 
 return M
