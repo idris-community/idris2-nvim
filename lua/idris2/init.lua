@@ -87,11 +87,11 @@ function M.setup(options)
 		vim.cmd([[highlight link @lsp.type.module.idris2 idrisModule]])
 	end
 
- vim.filetype.add{
-  extension = {
-   idr = 'idris2'
-  }
- }
+	vim.filetype.add{
+		extension = {
+		 idr = 'idris2'
+		}
+	}
 
 	setup_lsp()
 end
