@@ -3,13 +3,14 @@ local config = require('idris2.config')
 local M = {}
 
 function M.request(bufnr)
-  local bufnr = bufnr or 0
+  local bufnr = bufnr or vim.api.nvim_get_current_buf()
   local text_params = vim.lsp.util.make_text_document_params()
-  vim.lsp.for_each_buffer_client(bufnr, function(client, client_id, bufnr)
+
+  for _, client in pairs(vim.lsp.get_clients({ bufnr = bufnr })) do
     if vim.tbl_get(client.handlers, 'textDocument/semanticTokens/full') ~= nil then
       vim.lsp.buf_request(bufnr, 'textDocument/semanticTokens/full', { textDocument = text_params })
     end
-  end)
+  end
 end
 
 function M.refresh(err, result, ctx, cfg)
