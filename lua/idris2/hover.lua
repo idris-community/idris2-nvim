@@ -28,8 +28,7 @@ function M.handler(err, result, ctx, cfg)
   if config.split_open then
     vim.api.nvim_buf_set_option(M.res_split.bufnr, 'modifiable', true)
 
-    local lines = vim.split(result.contents.value, '\n')
-    lines = vim.lsp.util.trim_empty_lines(lines)
+    local lines = vim.split(result.contents.value, '\n', {trimempty=true})
     table.insert(lines, 1, '')
     table.insert(lines, '')
 
