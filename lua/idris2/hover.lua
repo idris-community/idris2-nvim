@@ -55,6 +55,13 @@ function M.handler(err, result, ctx, cfg)
   end
 end
 
+-- When split is not given, use the current state of split, else set it accordingly
+function M.hover(split)
+  if split == true then M.open_split() elseif split == false then M.close_split() end
+  local params = vim.lsp.util.make_position_params(vim.api.nvim_get_current_win(), "utf-8")
+  vim.lsp.buf_request(0, 'textDocument/hover', params, M.handler)
+end
+
 function M.setup()
   local ft = vim.bo.filetype
   M.res_split = Split({

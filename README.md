@@ -37,7 +37,7 @@ require('idris2').setup({})
 **NOTE: This is the only line of code necessary for setup, do not also add lines for `nvim-lspconfig` because the server setup is already handled by the plugin.**
 
 ## Configuration
-The options shown below are the defaults. You only need to pass the keys to the setup function that you want to be changed, because the defaults are applied for keys that are not provided. 
+The options shown below are the defaults. You only need to pass the keys to the setup function that you want to be changed, because the defaults are applied for keys that are not provided.
 
 ```lua
 local opts = {
@@ -164,6 +164,7 @@ vim.cmd [[nnoremap <Leader>cs <Cmd>lua require('idris2.code_action').case_split(
 |-------------|---------------------------------------------------------------|
 |`open_split` |Show hovers in a persistent split window, can show full history|
 |`close_split`|Show hovers in the default popup                               |
+|`hover`      |Perform the hovering action (useful when `vim.lsp.buf.hover()` does not work anymore)|
 
 ### `idris2.code_action` module
 |Function           |Description                                                                       |
