@@ -8,7 +8,7 @@ M.res_split = nil
 
 function M.handler(err, result, ctx, cfg)
   if err ~= nil then
-    vim.notify(err, vim.log.levels.ERROR)
+    vim.notify(err.message, vim.log.levels.ERROR)
     return
   end
   if not result then
