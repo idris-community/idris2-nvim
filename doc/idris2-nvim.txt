@@ -85,7 +85,7 @@ table expected by the `setup` function, with the default values: >
 
 If you want to perform some action after the LSP completes a Code Action,
 you can register a hook (a function to be called when any code action is
-completed). 
+completed).
 
 Your function will be called with the chosen code action as its only parameter.
 This action parameter has a `title` and optionally an `edit`. The details of these
@@ -170,6 +170,11 @@ replacing previous hovers.
 
 close_split()                                      *idris2.hover.close_split()*
 `close_split` restores the default handler for LSP hover actions.
+
+hover({split})                                     *idris2.hover.hover()*
+`hover` forces the hovering action on the current file position. When optional
+`split` argument is given, this forces to open or close the split,
+correspondingly.
 
 ===============================================================================
 Lua module: idris2.browse                                         *idris2.browse*

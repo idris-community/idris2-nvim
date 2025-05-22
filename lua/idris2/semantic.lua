@@ -52,8 +52,8 @@ function M.full(err, result, ctx, cfg)
     local token_type = token_types[data[i + 3] + 1]
 
     local line = vim.api.nvim_buf_get_lines(bufnr, prev_line, prev_line + 1, false)[1]
-    local byte_start = vim.str_byteindex(line, prev_start)
-    local byte_end = vim.str_byteindex(line, prev_start + data[i + 2])
+    local byte_start = vim.str_byteindex(line, "utf-8", prev_start)
+    local byte_end = vim.str_byteindex(line, "utf-8", prev_start + data[i + 2])
     vim.api.nvim_buf_add_highlight(bufnr, ns, 'LspSemantic_' .. token_type, prev_line, byte_start, byte_end)
   end
   vim.notify(vim.fn.expand('%:t') .. ' semantically highlighted', vim.log.levels.INFO)
