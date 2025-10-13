@@ -3,7 +3,7 @@ Easy setup and extra features for the native LSP client and the Idris2 LSP serve
 
 ## Prerequisites
 
-- `neovim 0.5+`
+- `neovim 0.11+`
 - `nvim-lspconfig`
 - `idris2`
 - `idris2-lsp`
