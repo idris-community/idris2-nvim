@@ -109,4 +109,12 @@ function M.hide_namespace()
 	vim.lsp.buf_notify(0, "workspace/didChangeConfiguration", { settings = { fullNamespace = false } })
 end
 
+function M.brief_completions()
+	vim.lsp.buf_notify(0, "workspace/didChangeConfiguration", { settings = { briefCompletions = true } })
+end
+
+function M.full_completions()
+	vim.lsp.buf_notify(0, "workspace/didChangeConfiguration", { settings = { briefCompletions = false } })
+end
+
 return M
