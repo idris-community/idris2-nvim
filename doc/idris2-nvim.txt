@@ -123,6 +123,14 @@ hide_namespace()                                      *idris2.hide_namespace()*
 `hide_namespace` asks the Idris2 LSP Server to hide the full namespace of names
 in hovers.
 
+brief_completions()                                *idris2.brief_completions()*
+`brief_completions` asks the Idris2 LSP Server to provide only function names
+when completions are requested.
+
+full_completions()                                  *idris2.full_completions()*
+`full_completions` asks the Idris2 LSP Server to provide full function
+signatures when completions are requested.
+
 ===============================================================================
 Lua module: idris2.semantic                                     *idris2.semantic*
 
