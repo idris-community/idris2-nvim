@@ -4,8 +4,6 @@ local code_action = require("idris2.code_action")
 
 local M = {}
 
-local nvim_lsp = require("lspconfig")
-
 local function setup_on_attach()
 	local lsp_opts = config.options.server
 	local user_on_attach = lsp_opts.on_attach -- Save user callback
@@ -34,37 +32,25 @@ local function setup_handlers()
 end
 
 local function setup_lsp()
-	local root_dir_error = function(startpath)
-		local path = nvim_lsp.util.root_pattern("*.ipkg")(startpath)
-		if path ~= nil then
-			return path
+	local root_dir_error = function(bufnr, on_dir)
+		local startpath = vim.api.nvim_buf_get_name(bufnr)
+		local path = vim.fs.root(bufnr, function(name)
+			return name:match("%.ipkg$") ~= nil
+		end)
+		if path == nil then
+			vim.notify(
+				string.format(
+					"[idris2_lsp] could not find an .ipkg file in %s or any parent directory.\nHint: use 'idris2 --init' or 'pack new' to intialize an Idris2 project.",
+					startpath
+				),
+				vim.log.levels.WARN
+			)
 		end
-
-		vim.notify(
-			string.format(
-				"[idris2_lsp] could not find an .ipkg file in %s or any parent directory.\nHint: use 'idris2 --init' or 'pack new' to intialize an Idris2 project.",
-				startpath
-			),
-			vim.log.levels.WARN
-		)
+		on_dir(path)
 	end
 	local server = vim.tbl_deep_extend("force", config.options.server, { root_dir = root_dir_error })
-	nvim_lsp.idris2_lsp.setup(server)
-
-	-- Goto... commands may jump to non package-local files, e.g. base or contrib
-	-- however packages installed with source provide only the source-file itself
-	-- as read-only with no ipkg since they should not be compiled. This patches
-	-- the function that adds files to the attached LSP instance, so that it
-	-- doesn't add Idris2 files in the installation prefix (idris2 --prefix)
-	local old_add = nvim_lsp.idris2_lsp.manager.add
-	local flag, res = pcall(function()
-		return vim.split(vim.fn.system({ "idris2", "--prefix" }), "\n")[1]
-	end)
-	nvim_lsp.idris2_lsp.manager.add = function(self, root_dir, single_file, bufnr)
-		if not flag or not vim.startswith(root_dir, res) then
-			old_add(self, root_dir, single_file, bufnr)
-		end
-	end
+	vim.lsp.config("idris2_lsp", server)
+	vim.lsp.enable("idris2_lsp")
 end
 
 function M.setup(options)
@@ -126,6 +112,14 @@ end
 
 function M.set_log_level(lvl)
 	vim.lsp.buf_notify(0, "workspace/didChangeConfiguration", { settings = { logSeverity = lvl } })
+end
+
+function M.brief_completions()
+	vim.lsp.buf_notify(0, "workspace/didChangeConfiguration", { settings = { briefCompletions = true } })
+end
+
+function M.full_completions()
+	vim.lsp.buf_notify(0, "workspace/didChangeConfiguration", { settings = { briefCompletions = false } })
 end
 
 return M

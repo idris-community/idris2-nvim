@@ -3,11 +3,11 @@ Easy setup and extra features for the native LSP client and the Idris2 LSP serve
 
 ## Prerequisites
 
-- `neovim 0.5+`
+- `neovim 0.11+`
 - `nvim-lspconfig`
 - `idris2`
 - `idris2-lsp`
-- `nui.nvim` (only for extra UI features)
+- `nui.nvim` (for UI features)
 
 ## Installation
 
@@ -37,7 +37,7 @@ require('idris2').setup({})
 **NOTE: This is the only line of code necessary for setup, do not also add lines for `nvim-lspconfig` because the server setup is already handled by the plugin.**
 
 ## Configuration
-The options shown below are the defaults. You only need to pass the keys to the setup function that you want to be changed, because the defaults are applied for keys that are not provided. 
+The options shown below are the defaults. You only need to pass the keys to the setup function that you want to be changed, because the defaults are applied for keys that are not provided.
 
 ```lua
 local opts = {
@@ -125,14 +125,16 @@ vim.cmd [[nnoremap <Leader>cs <Cmd>lua require('idris2.code_action').case_split(
 ```
 
 ### `idris2` module
-|Function            |Description                   |
-|--------------------|------------------------------|
-|`show_implicits`    |Show implicits in hovers      |
-|`hide_implicits`    |Hide implicits in hovers      |
-|`show_machine_names`|Show machine names in hovers  |
-|`hide_machine_names`|Hide machine names in hovers  |
-|`full_namespace`    |Show full namespaces in hovers|
-|`hide_namespace`    |Hide namespaces in hovers     |
+|Function            |Description                              |
+|--------------------|-----------------------------------------|
+|`show_implicits`    |Show implicits in hovers                 |
+|`hide_implicits`    |Hide implicits in hovers                 |
+|`show_machine_names`|Show machine names in hovers             |
+|`hide_machine_names`|Hide machine names in hovers             |
+|`full_namespace`    |Show full namespaces in hovers           |
+|`hide_namespace`    |Hide namespaces in hovers                |
+|`brief_completions` |Insert only function name for completion |
+|`full_completions`  |Insert function signature for completion |
 
 ### `idris2.semantic` module
 |Function |Description                                            |
@@ -164,6 +166,7 @@ vim.cmd [[nnoremap <Leader>cs <Cmd>lua require('idris2.code_action').case_split(
 |-------------|---------------------------------------------------------------|
 |`open_split` |Show hovers in a persistent split window, can show full history|
 |`close_split`|Show hovers in the default popup                               |
+|`hover`      |Perform the hovering action (useful when `vim.lsp.buf.hover()` does not work anymore)|
 
 ### `idris2.code_action` module
 |Function           |Description                                                                       |

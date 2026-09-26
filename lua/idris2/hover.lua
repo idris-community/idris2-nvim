@@ -8,7 +8,7 @@ M.res_split = nil
 
 function M.handler(err, result, ctx, cfg)
   if err ~= nil then
-    vim.notify(err, vim.log.levels.ERROR)
+    vim.notify(err.message, vim.log.levels.ERROR)
     return
   end
   if not result then
@@ -28,8 +28,7 @@ function M.handler(err, result, ctx, cfg)
   if config.split_open then
     vim.api.nvim_buf_set_option(M.res_split.bufnr, 'modifiable', true)
 
-    local lines = vim.split(result.contents.value, '\n')
-    lines = vim.lsp.util.trim_empty_lines(lines)
+    local lines = vim.split(result.contents.value, '\n', {trimempty=true})
     table.insert(lines, 1, '')
     table.insert(lines, '')
 
@@ -54,6 +53,13 @@ function M.handler(err, result, ctx, cfg)
   else
     return vim.lsp.handlers.hover(err, result, ctx, cfg)
   end
+end
+
+-- When split is not given, use the current state of split, else set it accordingly
+function M.hover(split)
+  if split == true then M.open_split() elseif split == false then M.close_split() end
+  local params = vim.lsp.util.make_position_params(vim.api.nvim_get_current_win(), "utf-8")
+  vim.lsp.buf_request(0, 'textDocument/hover', params, M.handler)
 end
 
 function M.setup()
